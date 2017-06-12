@@ -14,7 +14,6 @@ var variable1 = 3
 var variable2: Int! = 3     // 암시적 추출 옵셔널
 var variable3: Int? = 3     // 옵셔널
 
-
 print("// Test 1 --------------------//")
 print(variable1)            // 3
 print(variable2)            // 3

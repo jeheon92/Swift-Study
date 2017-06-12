@@ -1,0 +1,154 @@
+# Chapter13 클로저  
+일정 기능을 하는 코드를 하나의 블록으로 모아놓은 것  
+
+변수나 상수가 선언된 위치에서 참조(Reference)를 획득(Capture)하고 저장한다.  
+이를 변수나 상수의 클로징이라고 하며 클로저는 여기서 착안된 이름  
+
+함수는 클로저의 몇가지 모양 중 하나
+
+클로저는 세가지 모양을 가질 수 있다.  
+
+- 이름을 가지면서 어떤 값도 획득하지 않는 전역함수의 형태  
+- 이름을 가지면서 다른 함수의 내부 값을 획득할 수 있는 중첩된 함수의 형태  
+- 이름이 없고 주변 문맥에 따라 값을 획들할 수 있는 축양 문법으로 작성된 형태  
+
+## 13.1 기본 클로저  
+
+```swift
+// 클로저 기본 문법
+{ (매개변수들) -> 반환 타입 in 
+	실행 코드
+}
+```
+
+```swift 
+// 정렬을 위한 함수 전달
+func backwards(first: String, second: String) -> Bool {
+	print("\(first) \(second) 비교중")
+	return first > second
+}
+
+let reversed: [String] = names.sorted(by: backwards)
+print(reversed)		// ["yagom", "wizplan", "jenny", "eric"]
+```  
+
+
+```swift 
+// 정렬을 위한 클로저 전달
+// backwards(first:second:) 함수 대신에 sorted(by:) 메서드의 전달인자로 클로저를 직접 전달합니다.
+let reversed: [String] = names.sorted(by: { (first: String, second: String) -> Bool in
+	return first > second
+})
+print(reversed) 		// ["yagom", "wizplan", "jenny", "eric"]
+```  
+
+## 13.2 후행 클로저  
+- 맨 마지막 전달인자로 전달되는 클로저에만 후행 클로저로 사용할 수 있다.
+- 단하나의 클로저만 전달인자로 전달하는 경우에는 소괄호를 생략해줄 수도 있다.  
+
+```swift 
+// 후행 클로저의 사용
+let reversed: [String] = names.sorted() { (first: String, second: String) -> Bool in
+	return first > second
+}
+
+// sorted(by:) 메서드의 소괄호까지 생략 가능합니다.
+let reversed: [String] = names.sorted { (first: String, second: String) -> Bool in
+	return first > second
+}
+```
+
+## 13.3 클로저 표현 간소화
+
+### 13.3.1 문맥을 통한 타입 유추  
+```swift 
+// 클로저의 매개변수 타입과 반환 타이블 생략하여 표현할 수 있습니다.
+let reversed: [String] = names.sorted { (first, second) in
+	return first > second
+}  
+```
+
+### 13.3.2 단축 인자 이름  
+```swift 
+// 단축 인자 이름을 사용한 표현
+let reversed: [String] = names.sorted {
+	return $0 > $1
+}  
+```
+
+### 13.3.3 암시적 반환 표현  
+```swift 
+// 암시적 반환 표현의 사용
+let reversed: [String] = names.sorted { $0 > $1 }  
+```
+
+### 13.3.4 연산자 함수  
+```swift 
+// 연산자 함수를 클로저의 역할로 사용
+let reversed: [String] = names.sorted(by: >)
+```
+
+## 13.4 값 획득
+정의된 위치의 주변 문맥을 통해 상수나 변수를 획득(Capture)할 수 있다.  
+값 획득을 통해 클로저는 주변에 정의된 상수나 변수가 더는 존재하지 않더라도 그 상수나 변수의 값을 자신 내부에서 참조하거나 수정할 수 있다.
+
+```swift
+// 클로저는 참조 타입이다.
+let incrementByTwo: (() -> Int) = makeIncrementer(forIncrement: 2)
+let incrementByTwo2: (() -> Int) = makeIncrementer(forIncrement: 2)
+let incrementByTen: (() -> Int) = makeIncrementer(forIncrement: 10)
+
+let first: Int = incrementByTwo()		// 2
+let second: Int = incrementByTwo()		// 4  
+let third: Int = incrementByTwo()		// 6
+
+let first2: Int = incrementByTwo2()		// 2
+let second2: Int = incrementByTwo2()	// 4  
+let third2: Int = incrementByTwo2()		// 6
+
+let first3: Int = incrementByTen()		// 10
+let second3: Int = incrementByTen()		// 20  
+let third3: Int = incrementByTen()		// 30
+
+```
+
+## 13.5 클로저는 참조 타입  
+```swift
+// 클로저는 참조 타입이다.
+let incrementByTwo: (() -> Int) = makeIncrementer(forIncrement: 2)
+let sameWithIncrementByTwo: (() -> Int) = incrementByTwo
+
+let first: Int = incrementByTwo()			// 2
+let second: Int = sameWithIncrementByTwo()	// 4  
+```
+
+## 13.6 탈출 클로저  
+함수의 전달인자로 전달된 클로저가 함수 종료 후에 호출될 때 클로저가 함수를 탈출(Escape)한다고 표현한다.  
+클로저를 매개변수로 갖는 함수를 선언할 때 매개변수 이름의 콜론(:) 뒤에 @escaping 키워드를 사용하여 클로저가 탈출하는 것을 허용한다고 명시해줄 수 있다.  
+
+탈출 클로저의 경우 클로저 내부에서 해당 타입의 프로퍼티나 메서드, 서브스크립트 등에 접근하려면 self 키워드를 명시적으로 사용해야 한다. 비탈출 클로저의 경우 self 키워드는 선택 사항이다.  
+
+## 13.7 자동 클로저  
+- 자동 클로저는 전달인자를 갖지 않는다.  
+- 직접 자동 클로저를 호출하는 함수를 구현하는 일은 흔치 않을 것이다. 또한 자동 클로저의 과도한 사용은 코드를 이해하기 어렵게 만들 가능성이 크므로 정신건강에 매우 해롭다.
+- @autoclosure (@noescape 속성을 포함), 만약 자동 클로저를 탈출하는 클로저로 사용하고 싶다면 @autoclosure 속성 뒤에 @secaping 속성을 덧붙여서 사용하면 된다.
+
+```swift
+// 함수의 전달인자로 전달되는 클로저
+customersInLine = ["YoangWha", "SangYong", "SungHun", "HaMi"]
+
+func serveCustomer(_ customerProvider: () -> String) {
+    print("Now serving \(customerProvider())!")
+}
+serveCustomer( { customersInLine.removeFirst() } )   // "Now serving YoangWha!"
+```
+
+```swift
+// 자동 클로저의 사용
+customersInLine = ["YoangWha", "SangYong", "SungHun", "HaMi"]
+
+func serveCustomer(_ customerProvider: @autoclosure () -> String) {
+    print("Now serving \(customerProvider())!")
+}
+serveCustomer(customersInLine.removeFirst()) // "Now serving YoangWha!"
+```
