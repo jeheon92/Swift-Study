@@ -101,5 +101,5 @@ if var j: Int? = bindingTest {
     print("else")
 }
 
-var k: Int = bindingTest    // error
+//var k: Int = bindingTest    // error
 
