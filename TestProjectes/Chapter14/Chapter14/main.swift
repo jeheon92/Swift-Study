@@ -19,7 +19,7 @@ class Room {    // 호실
 
 class Building {    // 건물
     var name: String           // 건물이름
-    var room: Room!	   // 호실정보
+    var room: Room?	   // 호실정보
     
     init(name: String) {
         self.name = name
@@ -30,13 +30,13 @@ struct Address {    // 주소
     var province: String        // 광역시/도
     var city: String            // 시/군/구
     var street: String          // 도로명
-    var building: Building!     // 건물
-    var detailAddress: String!  // 건물 외 상세주소
+    var building: Building?     // 건물
+    var detailAddress: String?  // 건물 외 상세주소
 }
 
 class Person {  // 사람
     var name: String            // 이름
-    var address: Address!       // 주소
+    var address: Address?       // 주소
     
     init(name: String) {
         self.name = name
@@ -53,17 +53,20 @@ if let roomNumber: Int = yagom.address?.building?.room?.number {
 }
 
 //// 코드 14-6 옵셔널 체이닝을 통한 값 할당 시도
-//yagom.address.building.room.number = 505
+yagom.address?.building?.room?.number = 505
 print(yagom.address?.building?.room?.number)	// nil
 
 
 // 코드 14-7 옵셔널 체이닝을 통한 값 할당
 yagom.address = Address(province: "충청북도", city: "청주시 청원구", street: "충청대로", building: nil, detailAddress: nil)
-yagom.address.building = Building(name: "곰굴")
-yagom.address.building.room = Room(number: 0)
-yagom.address.building.room.number = 505
+yagom.address?.building = Building(name: "곰굴")
+yagom.address?.building?.room = Room(number: 0)
+yagom.address?.building?.room?.number = 505
 
-print(yagom.address!.building!.room!.number)    // Optional(505)
+print(yagom.address?.building?.room?.number)    // Optional(505)
+
+//print(yagom.address?.building?.room?.number!)       // error
+//print((yagom.address?.building?.room?.number)!)     // 505
 
 
-let jeheon: Int! = Int()
+let jeheon: Int? = Int()
