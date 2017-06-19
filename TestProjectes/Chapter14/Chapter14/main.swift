@@ -56,7 +56,6 @@ if let roomNumber: Int = yagom.address?.building?.room?.number {
 yagom.address?.building?.room?.number = 505
 print(yagom.address?.building?.room?.number)	// nil
 
-
 // 코드 14-7 옵셔널 체이닝을 통한 값 할당
 yagom.address = Address(province: "충청북도", city: "청주시 청원구", street: "충청대로", building: nil, detailAddress: nil)
 yagom.address?.building = Building(name: "곰굴")
