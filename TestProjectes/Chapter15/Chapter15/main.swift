@@ -20,7 +20,7 @@ struct Friend {
     var age: UInt
 }
 
-var friends: [Friend] = [Friend]()
+var friends: Array<Friend> = [Friend]()
 
 friends.append(Friend(name: "Yoobato", gender: .male, location: "발리", age: 26))
 friends.append(Friend(name: "JiSoo", gender: .male, location: "시드니", age: 24))
@@ -51,11 +51,11 @@ print(string)
 // Compile error 발생! 뭐지..?
 // Expression was too complex to be solved in reasonable time; consider breaking up the expression into distinct sub-expressions
 
-var string = friends.map{ Friend(name: $0.name, gender: $0.gender, location: $0.location, age: $0.age + 1) }.filter{ $0.location != "서울" && $0.age >= 25 }.reduce("서울 외의 지역에 거주하며 25세 이상인 친구") { $0 + "\n" + "\($1.name) \($1.gender) \($1.location) \($1.age)세" }
+//var string = friends.map{ Friend(name: $0.name, gender: $0.gender, location: $0.location, age: $0.age + 1) }.filter{ $0.location != "서울" && $0.age >= 25 }.reduce("서울 외의 지역에 거주하며 25세 이상인 친구") { $0 + "\n" + "\($1.name) \($1.gender) \($1.location) \($1.age)세" }
 
 // ㅋㅋㅋㅋ 좀 느리긴해도 이건 됨ㅋㅋㅋㅋㅋㅋ 뭐지 진짜?
 // 문자열 살짝 합침
-var string = friends.map{ Friend(name: $0.name, gender: $0.gender, location: $0.location, age: $0.age + 1) }.filter{ $0.location != "서울" && $0.age >= 25 }.reduce("서울 외의 지역에 거주하며 25세 이상인 친구") { $0 + "\n\($1.name) \($1.gender) \($1.location) \($1.age)세" }
+//var string = friends.map{ Friend(name: $0.name, gender: $0.gender, location: $0.location, age: $0.age + 1) }.filter{ $0.location != "서울" && $0.age >= 25 }.reduce("서울 외의 지역에 거주하며 25세 이상인 친구") { $0 + "\n\($1.name) \($1.gender) \($1.location) \($1.age)세" }
 
 
 print("\n" + string)
